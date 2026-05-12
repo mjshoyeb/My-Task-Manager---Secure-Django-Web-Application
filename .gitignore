@@ -1,0 +1,25 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+
+# Database (আপনি যদি চান আপনার ডাটাবেস গিটহাবে না যাক)
+# ল্যাবে দেখানোর জন্য db.sqlite3 আপলোড করতে পারেন, 
+# কিন্তু প্রফেশনাল কাজে এটি ইগনোর করা হয়।
+# db.sqlite3
+
+# Static files area (যদি আলাদাভাবে কালেক্ট করেন)
+/staticfiles/
+
+# Environment variables (সিকিউরিটি ফাইল)
+.env
+
+# OS generated files
+.DS_Store
+Thumbs.db

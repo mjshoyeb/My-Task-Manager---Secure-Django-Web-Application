@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %} টাস্ক এডিট করুন {% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-0">
+                <div class="card-body">
+                    <h3 class="text-center mb-4">✏️ টাস্ক পরিবর্তন করুন</h3>
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary w-100">পরিবর্তন সেভ করুন</button>
+                            <a href="{% url 'home' %}" class="btn btn-outline-secondary w-100 mt-2">ফিরে যান</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
