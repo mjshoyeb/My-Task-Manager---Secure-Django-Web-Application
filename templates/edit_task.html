@@ -1,25 +1,81 @@
 {% extends 'base.html' %}
 
-{% block title %} টাস্ক এডিট করুন {% endblock %}
+{% block title %}
+    Edit Task | My Task Manager
+{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow border-0">
-                <div class="card-body">
-                    <h3 class="text-center mb-4">✏️ টাস্ক পরিবর্তন করুন</h3>
-                    <form method="POST">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <div class="mt-4">
-                            <button type="submit" class="btn btn-primary w-100">পরিবর্তন সেভ করুন</button>
-                            <a href="{% url 'home' %}" class="btn btn-outline-secondary w-100 mt-2">ফিরে যান</a>
-                        </div>
-                    </form>
+<div class="max-w-xl mx-auto mt-8 sm:mt-12 px-4">
+    <div class="backdrop-blur-lg bg-slate-900/40 border border-slate-800/80 rounded-3xl shadow-2xl overflow-hidden">
+        <div class="p-6 sm:p-8">
+            
+            <div class="flex flex-col items-center justify-center text-center mb-8">
+                <div class="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-400 mb-3 border border-amber-500/20 shadow-lg shadow-amber-500/5">
+                    <i class="fas fa-pen-to-square text-lg"></i>
                 </div>
+                <h3 class="text-xl font-black text-white tracking-wide">Modify Task Parameters</h3>
+                <p class="text-xs text-slate-400 mt-1">Update your title, descriptions, or shifting deadline limits</p>
             </div>
+            
+            <form method="POST" class="space-y-5 text-slate-300">
+                {% csrf_token %}
+                
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Task Title</label>
+                    <div class="relative">
+                        {{ form.title }}
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Description / Notes</label>
+                    {{ form.description }}
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Category Stream</label>
+                    {{ form.category }}
+                </div>
+
+                <div>
+                    <label for="due_date" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Due Date & Time</label>
+                    <input type="datetime-local" name="due_date" id="due_date" 
+                           class="w-full bg-slate-950/50 border border-slate-800 focus:border-emerald-500/60 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-1 focus:ring-emerald-500/30 transition-all duration-200"
+                           value="{{ task.due_date|date:'Y-m-d\TH:i' }}">
+                </div>
+
+                <div class="pt-4 space-y-2">
+                    <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-indigo-950/50 transition-all duration-200 active:scale-[0.99] flex items-center justify-center space-x-2">
+                        <i class="fas fa-circle-check text-sm"></i>
+                        <span>Save Configuration</span>
+                    </button>
+                    
+                    <a href="{% url 'home' %}" class="w-full bg-slate-800/60 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700/50 text-center font-bold py-3 px-6 rounded-xl block transition-all duration-200 active:scale-[0.99]">
+                        Return to Workspace
+                    </a>
+                </div>
+            </form>
+
         </div>
     </div>
 </div>
+
+<style>
+    /* জ্যাঙ্গো ফর্ম ফিল্ডগুলোকে ডার্ক গ্লাস থিমের সাথে মানানসই করার কাস্টম CSS হ্যাক */
+    form input[type="text"], form textarea, form select {
+        width: 100% !important;
+        background-color: rgba(2, 6, 23, 0.5) !important;
+        border: 1px solid rgba(51, 65, 85, 0.5) !important;
+        border-radius: 0.75rem !important;
+        padding: 0.75rem 1rem !important;
+        font-size: 0.875rem !important;
+        color: #fff !important;
+        transition: all 0.2s;
+    }
+    form input:focus, form textarea:focus, form select:focus {
+        outline: none !important;
+        border-color: rgba(52, 211, 153, 0.6) !important;
+        box-shadow: 0 0 0 1px rgba(52, 211, 153, 0.3) !important;
+    }
+</style>
 {% endblock %}

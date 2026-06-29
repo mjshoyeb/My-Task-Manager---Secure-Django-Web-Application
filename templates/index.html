@@ -1,83 +1,290 @@
-{% extends 'base.html' %} {% block title %} 
-    ({{ tasks.count }}) নতুন টাস্ক | My Task Manager 
+{% extends 'base.html' %} 
+
+{% block title %} 
+    ({{ tasks.count }}) Dashboard | My Task Manager
 {% endblock %}
 
-{% block content %} <div class="container mt-2">
-    <div class="row justify-content-center mb-5">
-        <div class="col-md-10">
-            <div class="card shadow-sm border-0">
-                <div class="card-body p-4">
-                    <h4 class="card-title mb-4 text-success fw-bold text-center">📋 নতুন টাস্ক যোগ করুন</h4>
-                    <form method="POST">
-                        {% csrf_token %}
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">শিরোনাম</label>
-                                {{ form.title }}
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">ক্যাটাগরি</label> 
-                                {{ form.category }}
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">বিস্তারিত</label>
-                            {{ form.description }}
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100 shadow-sm py-2 fw-bold">টাস্ক সেভ করুন</button>
-                    </form>
-                </div>
+{% block content %} 
+<div class="space-y-8 max-w-5xl mx-auto">
+
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="backdrop-blur-md bg-slate-900/40 border border-slate-700/40 p-5 rounded-2xl shadow-xl hover:border-slate-500/40 transition-all duration-300 group">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Tasks</span>
+                <i class="fas fa-list-check text-slate-400 group-hover:text-slate-200 transition-colors"></i>
+            </div>
+            <h2 class="text-3xl font-black text-white tracking-tight">{{ total_tasks }}</h2>
+        </div>
+        <div class="backdrop-blur-md bg-amber-500/10 border border-amber-500/20 p-5 rounded-2xl shadow-xl hover:border-amber-500/40 transition-all duration-300 group">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-xs font-semibold uppercase tracking-wider text-amber-400/80">Pending</span>
+                <i class="fas fa-clock text-amber-400/60 group-hover:text-amber-400 transition-colors animate-pulse"></i>
+            </div>
+            <h2 class="text-3xl font-black text-amber-400 tracking-tight">{{ pending_count }}</h2>
+        </div>
+        <div class="backdrop-blur-md bg-emerald-500/10 border border-emerald-500/20 p-5 rounded-2xl shadow-xl hover:border-emerald-500/40 transition-all duration-300 group">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-xs font-semibold uppercase tracking-wider text-emerald-400/80">Completed</span>
+                <i class="fas fa-circle-check text-emerald-400/60 group-hover:text-emerald-400 transition-colors"></i>
+            </div>
+            <h2 class="text-3xl font-black text-emerald-400 tracking-tight">{{ completed_count }}</h2>
+        </div>
+        <div class="backdrop-blur-md bg-rose-500/10 border border-rose-500/20 p-5 rounded-2xl shadow-xl hover:border-rose-500/40 transition-all duration-300 group">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-xs font-semibold uppercase tracking-wider text-rose-400/80">Missed</span>
+                <i class="fas fa-triangle-exclamation text-rose-400/60 group-hover:text-rose-400 transition-colors"></i>
+            </div>
+            <h2 class="text-3xl font-black text-rose-400 tracking-tight">{{ missed_count }}</h2>
+        </div>
+    </div>
+
+    <div class="backdrop-blur-md bg-slate-900/30 border border-slate-800/60 p-4 rounded-2xl shadow-lg">
+        <div class="flex justify-between items-center mb-2">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Workspace Progress</span>
+            <span class="text-xs font-extrabold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">{{ progress }}% Completed</span>
+        </div>
+        <div class="w-full bg-slate-950/60 rounded-full h-3 overflow-hidden p-[2px] border border-slate-800">
+            <div class="bg-gradient-to-r from-emerald-400 via-cyan-400 to-indigo-500 h-full rounded-full transition-all duration-1000 ease-out shadow-[0_0_12px_rgba(52,211,153,0.3)]" 
+                 style="width: {{ progress }}%;">
             </div>
         </div>
     </div>
 
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            <form method="GET" class="d-flex mb-4 shadow-sm">
-                <input type="text" name="search-area" value="{{ search_input }}" placeholder="টাস্ক খুঁজুন..." class="form-control me-2 py-2">
-                <button type="submit" class="btn btn-dark px-4">Search</button>
-            </form>
-
-            <h2 class="text-center mb-4 fw-bold text-dark">আমার ডেইলি টাস্ক লিস্ট</h2>
+    <div class="backdrop-blur-lg bg-slate-900/40 border border-slate-800/80 rounded-3xl shadow-2xl overflow-hidden">
+        <div class="p-6 sm:p-8">
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400">
+                    <i class="fas fa-plus text-sm"></i>
+                </div>
+                <h3 class="text-lg font-bold text-white tracking-wide">Create New Task</h3>
+            </div>
             
-            <div class="list-group shadow-sm">
-                {% for task in tasks %}
-                <div class="list-group-item d-flex justify-content-between align-items-center py-3 border-start border-4 {% if task.is_completed %}border-success{% else %}border-warning{% endif %} mb-2 rounded shadow-sm bg-white">
-                    <div class="d-flex align-items-center">
-                        <a href="{% url 'delete_task' task.id %}" class="btn btn-outline-danger btn-sm me-3 rounded-circle" title="মুছে ফেলুন">
-                            <i class="fas fa-trash-alt"></i>
-                        </a>
-                        <div>
-                            <strong class="{% if task.is_completed %}text-decoration-line-through text-muted{% endif %} d-block" style="font-size: 1.1rem;">
-                                {{ task.title }}
-                            </strong>
-                            <span class="badge bg-light text-dark border small mt-1">{{ task.category }}</span>
-                            <p class="text-muted mb-0 small mt-1">{{ task.description }}</p>
+            <form method="POST" class="space-y-5 text-slate-300">
+                {% csrf_token %}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Task Title</label>
+                        <div class="relative">
+                            {{ form.title }}
                         </div>
                     </div>
-
-                    <div class="action-buttons">
-                        {% if task.is_completed %}
-                            <span class="badge bg-success rounded-pill px-3 py-2"><i class="fas fa-check-circle me-1"></i> Done</span>
-                        {% else %}
-                            <a href="{% url 'edit_task' task.id %}" class="btn btn-sm btn-warning shadow-sm px-3">
-                                <i class="fas fa-edit me-1"></i> এডিট
-                            </a>   
-                            <a href="{% url 'complete_task' task.id %}" class="btn btn-sm btn-primary shadow-sm px-3">
-                                সম্পন্ন করুন
-                            </a>
-                        {% endif %}
+                    <div>
+                        <label for="due_date" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Due Date & Time</label>
+                        <input type="datetime-local" name="due_date" id="due_date" 
+                               class="w-full bg-slate-950/50 border border-slate-800 focus:border-emerald-500/60 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-1 focus:ring-emerald-500/30 transition-all duration-200">
                     </div>
                 </div>
-                {% empty %}
-                <div class="list-group-item text-center py-5 text-muted bg-white shadow-sm rounded">
-                    <i class="fas fa-tasks fa-3x mb-3 opacity-25"></i>
-                    <h5>এখনো কোনো টাস্ক নেই!</h5>
-                    <p>উপরের ফর্ম থেকে আপনার প্রথম টাস্কটি যোগ করুন।</p>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Category</label>
+                    {{ form.category }}
                 </div>
-                {% endfor %}
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Description / Notes</label>
+                    {{ form.description }}
+                </div>
+
+                <button type="submit" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-emerald-950/20 transition-all duration-200 active:scale-[0.99] flex items-center justify-center space-x-2">
+                    <i class="fas fa-circle-check text-sm"></i>
+                    <span>Save Task Engine</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="space-y-6">
+        <div class="flex flex-col md:flex-row gap-3 items-center justify-between">
+            <h2 class="text-xl font-black text-white tracking-wide flex items-center space-x-2">
+                <i class="fas fa-folder-open text-slate-400 text-lg"></i>
+                <span>My Workspace Stream</span>
+            </h2>
+            
+            <form method="GET" class="w-full md:w-80 flex bg-slate-950/40 border border-slate-800 rounded-xl overflow-hidden focus-within:border-slate-700 transition-colors p-1">
+                <input type="text" name="search-area" value="{{ search_input }}" placeholder="Search specific task..." 
+                       class="w-full bg-transparent text-sm text-white px-3 py-2 focus:outline-none">
+                <button type="submit" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-lg text-xs font-bold transition-all">
+                    Search
+                </button>
+            </form>
+        </div>
+
+        <div class="space-y-3">
+            {% for task in tasks %}
+            <div class="task-item backdrop-blur-md bg-slate-900/30 border-l-4 rounded-2xl p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 transition-all duration-300 hover:bg-slate-900/50 shadow-md border-y border-r border-slate-800/40 {% if task.is_completed %}border-l-emerald-500 bg-emerald-950/5{% elif task.is_missed %}border-l-rose-500 bg-rose-950/5{% else %}border-l-amber-500{% endif %}" 
+                 id="task-card-{{ task.id }}"
+                 data-due="{{ task.due_date|date:'Y-m-d H:i:s' }}" 
+                 data-title="{{ task.title }}"
+                 data-missed="{% if task.is_missed %}true{% else %}false{% endif %}">
+                
+                <div class="flex items-center space-x-4 flex-grow w-full sm:w-auto">
+                    <a href="{% url 'delete_task' task.id %}" class="w-9 h-9 rounded-full bg-rose-500/10 hover:bg-rose-600 text-rose-400 hover:text-white flex items-center justify-center transition-all duration-200 active:scale-90 flex-shrink-0" title="Delete Task">
+                        <i class="fas fa-trash-alt text-xs"></i>
+                    </a>
+                    <div class="space-y-1">
+                        <strong class="text-base font-semibold tracking-wide text-slate-200 block {% if task.is_completed or task.is_missed %}line-through text-slate-500 font-normal{% endif %}">
+                            {{ task.title }}
+                        </strong>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="text-[10px] uppercase font-extrabold tracking-wider bg-slate-800/80 text-slate-300 px-2 py-0.5 rounded-md border border-slate-700/50">
+                                {{ task.category }}
+                            </span>
+                            
+                            <div class="text-xs">
+                                {% if task.is_completed %}
+                                    <span class="text-emerald-400 font-medium"><i class="fas fa-check-double mr-1"></i>Completed successfully</span>
+                                {% elif task.is_missed %}
+                                    <span class="text-rose-400 font-medium animate-pulse"><i class="fas fa-circle-exclamation mr-1"></i>Deadline expired</span>
+                                {% else %}
+                                    <span class="timer-display font-bold text-slate-300"></span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons-container flex-shrink-0 w-full sm:w-auto flex justify-end">
+                    {% if task.is_completed %}
+                        <span class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-black px-4 py-2 rounded-full flex items-center space-x-1.5 uppercase tracking-wider">
+                            <i class="fas fa-circle-check text-[10px]"></i>
+                            <span>Done</span>
+                        </span>
+                    {% elif task.is_missed %}
+                        <span class="bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-black px-4 py-2 rounded-full flex items-center space-x-1.5 uppercase tracking-wider animate-pulse">
+                            <i class="fas fa-circle-xmark text-[10px]"></i>
+                            <span>Incomplete</span>
+                        </span>
+                    {% else %}
+                        <div class="live-buttons flex items-center space-x-2 w-full sm:w-auto">
+                            <a href="{% url 'edit_task' task.id %}" class="flex-1 sm:flex-none text-center bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs font-bold px-4 py-2 rounded-xl transition-all active:scale-95">
+                                <i class="fas fa-pen-to-square mr-1"></i>Edit
+                            </a>   
+                            <a href="{% url 'complete_task' task.id %}" class="flex-1 sm:flex-none text-center bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-md shadow-indigo-950/50 transition-all active:scale-95">
+                                Complete
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
+            {% empty %}
+            <div class="backdrop-blur-md bg-slate-900/20 border border-slate-800/60 text-center py-12 rounded-3xl">
+                <i class="fas fa-folder-open text-slate-600 text-3xl mb-3 block"></i>
+                <h5 class="text-slate-400 text-sm font-medium">No tasks logged in this engine stream.</h5>
+            </div>
+            {% endfor %}
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+        Notification.requestPermission();
+    }
+
+    function updateTimers() {
+        const taskItems = document.querySelectorAll('.task-item');
+
+        taskItems.forEach(item => {
+            if (item.getAttribute('data-missed') === 'true') return; 
+
+            const dueString = item.getAttribute('data-due');
+            const taskTitle = item.getAttribute('data-title');
+            const timerDisplay = item.querySelector('.timer-display');
+            const actionContainer = item.querySelector('.action-buttons-container');
+
+            if (!timerDisplay) return;
+
+            if (!dueString || dueString.trim() === "" || dueString === "None") {
+                timerDisplay.innerHTML = `<span class="text-slate-500 font-normal"><i class="fas fa-infinity mr-1"></i>No Deadline</span>`;
+                return;
+            }
+
+            const dueDate = new Date(dueString.replace(' ', 'T')).getTime();
+            const now = new Date().getTime();
+            const timeLeft = dueDate - now;
+
+            // 🚨 লাইভ স্ক্রিনে ডেডলাইন অতিক্রান্ত হলে
+            if (timeLeft <= 0) {
+                timerDisplay.innerHTML = `<span class="text-rose-400 font-medium animate-pulse"><i class="fas fa-circle-exclamation mr-1"></i>Deadline expired</span>`;
+                item.classList.remove('border-l-amber-500');
+                item.classList.add('border-l-rose-500', 'bg-rose-950/5');
+                
+                if (actionContainer.querySelector('.live-buttons')) {
+                    actionContainer.innerHTML = `
+                        <span class="bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-black px-4 py-2 rounded-full flex items-center space-x-1.5 uppercase tracking-wider animate-pulse">
+                            <i class="fas fa-circle-xmark text-[10px]"></i>
+                            <span>Incomplete</span>
+                        </span>`;
+                }
+
+                const taskCardId = item.getAttribute('id');
+                if (sessionStorage.getItem(`notified_${taskCardId}`) !== 'true' && Notification.permission === "granted") {
+                    new Notification("Deadline Expired! ❌", {
+                        body: `The time limit for "${taskTitle}" has run out.`,
+                    });
+                    sessionStorage.setItem(`notified_${taskCardId}`, 'true');
+                }
+            } 
+            else {
+                // ১ ঘণ্টা এবং ১০ মিনিটের নোটিফিকেশন রিমাইন্ডার লজিক
+                const totalMinutesLeft = timeLeft / (1000 * 60);
+                const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+                let timeText = days > 0 ? `${days}d ${hours}h ${minutes}m` : `${hours}h ${minutes}m ${seconds}s`;
+                timerDisplay.innerHTML = `<i class="fas fa-hourglass-start mr-1 text-[10px] opacity-70"></i>${timeText} remaining`;
+
+                // নোটিফিকেশন এলার্ট ট্রিগার
+                if (totalMinutesLeft <= 60 && totalMinutesLeft > 59.9) {
+                    if (item.getAttribute('data-notified-1h') !== 'true' && Notification.permission === "granted") {
+                        new Notification("Reminder: 1 Hour Left ⏰", { body: `Only 1 hour left for "${taskTitle}"!` });
+                        item.setAttribute('data-notified-1h', 'true');
+                    }
+                }
+
+                if (totalMinutesLeft <= 10 && totalMinutesLeft > 9.9) {
+                    if (item.getAttribute('data-notified-10m') !== 'true' && Notification.permission === "granted") {
+                        new Notification("Urgent: 10 Minutes Left! ⚠️", { body: `Hurry up! "${taskTitle}" expires in 10 minutes!` });
+                        item.setAttribute('data-notified-10m', 'true');
+                    }
+                }
+
+                // লাইভ UI থিমিং পরিবর্তন (১০ মিনিটে লাল ফ্ল্যাশ, ১ ঘণ্টায় হলুদ)
+                if (totalMinutesLeft <= 10) { 
+                    timerDisplay.className = "timer-display font-bold text-rose-400 animate-[pulse_1s_infinite]"; 
+                } else if (totalMinutesLeft <= 60) { 
+                    timerDisplay.className = "timer-display font-bold text-amber-400"; 
+                } else { 
+                    timerDisplay.className = "timer-display font-semibold text-slate-300"; 
+                }
+            }
+        });
+    }
+
+    setInterval(updateTimers, 1000);
+    updateTimers();
+});
+</script>
+
+<style>
+    /* জ্যাঙ্গো থেকে জেনারেট হওয়া ইনপুট ফিল্ডগুলোকে সুন্দর করতে এই গ্লোবাল স্টাইল দেওয়া হয়েছে */
+    form input[type="text"], form textarea, form select {
+        width: 100% !important;
+        background-color: rgba(2, 6, 23, 0.5) !important;
+        border: 1px solid rgba(51, 65, 85, 0.5) !important;
+        border-radius: 0.75rem !important;
+        padding: 0.75rem 1rem !important;
+        font-size: 0.875rem !important;
+        color: #fff !important;
+        transition: all 0.2s;
+    }
+    form input:focus, form textarea:focus, form select:focus {
+        outline: none !important;
+        border-color: rgba(52, 211, 153, 0.6) !important;
+        box-shadow: 0 0 0 1px rgba(52, 211, 153, 0.3) !important;
+    }
+</style>
 {% endblock %}
