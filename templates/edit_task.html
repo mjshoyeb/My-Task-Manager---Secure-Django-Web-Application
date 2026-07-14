@@ -77,5 +77,15 @@
         border-color: rgba(52, 211, 153, 0.6) !important;
         box-shadow: 0 0 0 1px rgba(52, 211, 153, 0.3) !important;
     }
+    /* 📅 ক্যালেন্ডার আইকন সাদা করার গ্লোবাল রুল */
+    input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+        filter: invert(1) brightness(1.2) !important;
+        cursor: pointer !important;
+        opacity: 0.7 !important;
+        transition: opacity 0.2s ease !important;
+    }
+    input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
+        opacity: 1 !important;
+    }
 </style>
 {% endblock %}
