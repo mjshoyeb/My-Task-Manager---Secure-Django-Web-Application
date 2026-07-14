@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 
-
 class Task(models.Model): # আমাদের টাস্ক মডেল, যা টাস্কের তথ্য সংরক্ষণ করবে
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True) # এই লাইনটি যোগ করো
     title = models.CharField(max_length=200) # টাস্কের নাম
@@ -12,6 +11,7 @@ class Task(models.Model): # আমাদের টাস্ক মডেল, য
     is_completed = models.BooleanField(default=False) # সম্পন্ন হয়েছে কি না
     created_at = models.DateTimeField(auto_now_add=True) # তৈরির সময়
     is_missed = models.BooleanField(default=False) # এই ফিল্ডটি চিহ্নিত করবে যে টাস্কটি শেষ সময় পার হয়ে গেছে কিনা
+
 
     def __str__(self):
         return self.title

@@ -1,24 +1,24 @@
+# forms.py (অথবা যেখানে আপনার TaskForm ক্লাসটি ডিফাইন করা আছে)
 from django import forms
 from .models import Task
 
-class TaskForm(forms.ModelForm): # আমরা ModelForm ব্যবহার করছি কারণ আমাদের ফর্মটি সরাসরি মডেল থেকে তৈরি হবে
-    class Meta: #মেটা ক্লাসে (Configuration Class) আমরা আমাদের মডেল এবং ফিল্ড নির্ধারণ করছি
-        model = Task # কোন মডেল থেকে ফর্ম তৈরি হবে তা নির্ধারণ করছি
-        fields = ['title', 'description' , 'category'] # ফর্মে কোন কোন ফিল্ড থাকবে তা নির্ধারণ করছি
+class TaskForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ['title', 'category', 'description', 'due_date'] # আপনার প্রোজেক্টের ফিল্ডের সাথে মিলিয়ে নিন
         
-        # এখানে আমরা স্টাইল বা উইজেট যোগ করছি 
         widgets = {
             'title': forms.TextInput(attrs={
-                'class': 'form-control', 
-                'placeholder': 'টাস্কের শিরোনাম লিখুন'
+                'placeholder': 'Enter task title...',
+                'class': 'w-full bg-slate-950/50 border border-slate-800 focus:border-emerald-500/60 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-1 focus:ring-emerald-500/30 transition-all duration-200'
             }),
             'description': forms.Textarea(attrs={
-                'class': 'form-control', 
-                'placeholder': 'বিস্তারিত লিখুন',
-                'rows': 3  # বক্সের উচ্চতা কমিয়ে সুন্দর করা হলো
+                'placeholder': 'Write detailed description or notes here...',
+                'rows': 4,
+                'class': 'w-full bg-slate-950/50 border border-slate-800 focus:border-emerald-500/60 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-1 focus:ring-emerald-500/30 transition-all duration-200'
             }),
             'category': forms.TextInput(attrs={
-                'class': 'form-control', 
-                'placeholder': 'ক্যাটাগরি (যেমন: Work, Personal)'
+                'placeholder': 'Enter category (e.g. Work, Sports, Personal)...',
+                'class': 'w-full bg-slate-950/50 border border-slate-800 focus:border-emerald-500/60 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-1 focus:ring-emerald-500/30 transition-all duration-200'
             }),
         }

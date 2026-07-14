@@ -1,3 +1,5 @@
+from urllib import request
+
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Task
 from .forms import TaskForm 
@@ -16,7 +18,8 @@ from datetime import datetime  # সরাসরি ব্যাকআপের 
 @login_required(login_url='login')
 def home(request):
     search_input = request.GET.get('search-area') or ''
-    all_tasks = Task.objects.filter(user=request.user)
+    # 🔄 LIFO স্টাইলে সাজানোর জন্য সংশোধন (নতুন টাস্ক সবার উপরে থাকবে)
+    all_tasks = Task.objects.filter(user=request.user).order_by('-id')
     
     # 🟢 ১. ব্যাকএন্ডে ডেডলাইন চেক করে Missed স্ট্যাটাস লাইভ লক করা
     current_time = django_timezone.now() 

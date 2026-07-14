@@ -1,18 +1,102 @@
 {% extends 'base.html' %}
+
+{% block title %}
+    Create Account | My Task Manager
+{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center mt-5">
-    <div class="col-md-4">
-        <div class="card shadow">
-            <div class="card-body">
-                <h3 class="text-center">রেজিস্ট্রেশন করুন</h3>
-                <form method="POST">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <button type="submit" class="btn btn-primary w-100">Register</button>
-                </form>
-                <p class="mt-3">একাউন্ট নেই? <a href="{% url 'register' %}">রেজিস্ট্রেশন করুন</a></p>
+<div class="max-w-md mx-auto mt-6 sm:mt-12 px-4">
+    <!-- 🌌 গ্লাসমরফিজম রেজিস্ট্রেশন কার্ড -->
+    <div class="backdrop-blur-lg bg-slate-900/40 border border-slate-800/80 rounded-3xl shadow-2xl overflow-hidden">
+        <div class="p-6 sm:p-8">
+            
+            <!-- ইউজার আইকন এবং হেডার টাইটেল -->
+            <div class="flex flex-col items-center justify-center text-center mb-6">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 mb-3 border border-emerald-500/20 shadow-lg">
+                    <i class="fas fa-user-plus text-lg"></i>
+                </div>
+                <h3 class="text-xl font-black text-white tracking-wide">Join the Workspace</h3>
+                <p class="text-xs text-slate-400 mt-1">Create your secure profile to begin task execution</p>
             </div>
+            
+            <!-- রেজিস্ট্রেশন ফর্ম -->
+            <form method="POST" class="space-y-4 text-slate-300">
+                {% csrf_token %}
+                
+                <!-- জ্যাঙ্গো ফর্মের ইনপুট ফিল্ড রেন্ডারিং এরিয়া -->
+                <div class="space-y-3 register-form-fields">
+                    {{ form.as_p }}
+                </div>
+
+                <!-- সাবমিট বাটন -->
+                <button type="submit" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-teal-950/50 transition-all duration-200 active:scale-[0.99] flex items-center justify-center space-x-2 mt-6">
+                    <i class="fas fa-user-check text-sm"></i>
+                    <span>Register Account</span>
+                </button>
+            </form>
+
+            <!-- লগইন গেটওয়ে লিংক -->
+            <div class="mt-6 pt-4 border-t border-slate-800/60 text-center">
+                <p class="text-xs text-slate-400">
+                    Already have an account? 
+                    <a href="{% url 'login' %}" class="text-blue-400 hover:text-blue-300 font-bold ml-1 transition-colors underline underline-offset-4">
+                        Sign In Here
+                    </a>
+                </p>
+            </div>
+
         </div>
     </div>
 </div>
+
+<!-- 🟢 জ্যাঙ্গো রেজিস্ট্রেশন ফর্মের ডিফল্ট কুৎসিত টেক্সট হাইড এবং ক্লিন স্টাইলিং -->
+<style>
+    /* জ্যাঙ্গো ডিফল্ট প্যারাগ্রাফ স্পেসিং */
+    .register-form-fields p {
+        margin-bottom: 1rem !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    
+    /* লেবেল ডিজাইন */
+    .register-form-fields label {
+        display: block !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        font-size: 0.75rem !important;
+        font-weight: 600 !important;
+        color: #94a3b8 !important; /* text-slate-400 */
+        margin-bottom: 0.4rem !important;
+    }
+    
+    /* ইনপুট ফিল্ড ডিজাইন */
+    .register-form-fields input {
+        width: 100% !important;
+        background-color: rgba(2, 6, 23, 0.5) !important;
+        border: 1px solid rgba(51, 65, 85, 0.5) !important;
+        border-radius: 0.75rem !important;
+        padding: 0.7rem 1rem !important;
+        font-size: 0.875rem !important;
+        color: #fff !important;
+        transition: all 0.2s !important;
+        outline: none !important;
+    }
+    
+    .register-form-fields input:focus {
+        border-color: rgba(52, 211, 153, 0.6) !important; /* emerald-400 */
+        box-shadow: 0 0 0 1px rgba(52, 211, 153, 0.3) !important;
+    }
+    
+    /* জ্যাঙ্গোর ডিফল্ট বিরক্তিকর 'Required. 150 characters...' হেল্প টেক্সট ও এরর লিস্ট হাইড করার জাদুকরী ট্রিক */
+    .register-form-fields .helptext {
+        display: none !important;
+    }
+    .register-form-fields .errorlist {
+        color: #f87171 !important; /* text-red-400 */
+        font-size: 0.75rem !important;
+        margin-top: 0.25rem !important;
+        list-style-type: none !important;
+        padding-left: 0 !important;
+    }
+</style>
 {% endblock %}
